@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GradeCalc Suite - Jet Black</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: {
+                            100: 'rgba(255, 255, 255, 0.03)',
+                            200: 'rgba(255, 255, 255, 0.08)',
+                            300: 'rgba(255, 255, 255, 0.12)',
+                            border: 'rgba(255, 255, 255, 0.15)',
+                            highlight: 'rgba(56, 189, 248, 0.1)', // Cyan tint
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.2s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            /* Jet Black Theme */
+            background-color: #000000;
+            background-image: radial-gradient(circle at 50% 0%, #111827, #000000 60%);
+            background-attachment: fixed;
+            color: #e2e8f0;
+        }
+        
+        /* Core Glass Panel */
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 1px rgba(0,0,0,1), 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Input Fields */
+        .glass-input {
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            background: #0a0a0a;
+            border-color: rgba(56, 189, 248, 0.6); /* Cyan Focus */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Buttons */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Navigation Tabs */
+        .glass-tab {
+            color: #64748b;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .glass-tab:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .glass-tab.active {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 2px solid #38bdf8; /* Cyan active border */
+            color: #38bdf8;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        /* Accordion transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            opacity: 1;
+        }
+
+        /* --- Custom Glass Dropdown Styles --- */
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+        }
+        .custom-select-trigger {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: #f8fafc;
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .custom-select-trigger:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: #050505;
+        }
+        .custom-select-options {
+            position: absolute;
+            display: none;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem;
+            background: #050505; 
+            box-shadow: 0 10px 30px rgba(0,0,0,1);
+            z-index: 100;
+            max-height: 320px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .custom-select-options.open {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+        .custom-option {
+            position: relative;
+            display: block;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .custom-option:hover {
+            background: #0f172a;
+            color: #fff;
+            border-left: 2px solid #38bdf8;
+        }
+        .group-header {
+            padding: 0.75rem 1rem;
+            background: #000000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .group-header:hover {
+            background: #0f172a;
+        }
+        .group-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .search-box {
+            padding: 0.75rem;
+            position: sticky;
+            top: 0;
+            background: #000000;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <main class="w-full max-w-4xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 drop-shadow-sm">
+                GradeCalc Suite
+            </h1>
+            <p class="text-slate-500 font-medium tracking-widest text-xs uppercase">Precision Academic Tools</p>
+        </div>
+
+        <!-- Main Calculator Container -->
+        <div class="glass-panel rounded-2xl overflow-hidden min-h-[650px] flex flex-col">
+            
+            <!-- Navigation Tabs -->
+            <nav class="flex border-b border-white/10 overflow-x-auto bg-black">
+                <button onclick="switchTab('percent')" class="glass-tab active flex-1 py-4 px-6 text-center font-medium whitespace-nowrap" id="tab-percent">
+                    <i class="fas fa-percentage mr-2 text-sm"></i>Converter
+                </button>
+                <button onclick="switchTab('sgpa')" class="glass-tab flex-1 py-4 px-6 text-center font-medium whitespace-nowrap" id="tab-sgpa">
+                    <i class="fas fa-calculator mr-2 text-sm"></i>SGPA
+                </button>
+                <button onclick="switchTab('cgpa')" class="glass-tab flex-1 py-4 px-6 text-center font-medium whitespace-nowrap" id="tab-cgpa">
+                    <i class="fas fa-graduation-cap mr-2 text-sm"></i>CGPA
+                </button>
+                <button onclick="switchTab('target')" class="glass-tab flex-1 py-4 px-6 text-center font-medium whitespace-nowrap" id="tab-target">
+                    <i class="fas fa-crosshairs mr-2 text-sm"></i>Target
+                </button>
+                <button onclick="switchTab('info')" class="glass-tab flex-1 py-4 px-6 text-center font-medium whitespace-nowrap" id="tab-info">
+                    <i class="fas fa-book-open mr-2 text-sm"></i>Info
+                </button>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="p-6 md:p-8 flex-1 overflow-y-auto relative">
+                
+                <!-- 1. Converter (Percentage <-> CGPA) -->
+                <div id="content-percent" class="space-y-8 animate-slide-up">
+                    
+                    <!-- Toggle Switch -->
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-black border border-white/10 rounded-full p-1 flex relative shadow-inner">
+                            <button onclick="toggleConverterMode('toPercent')" id="btn-toPercent" class="px-6 py-2 rounded-full text-sm font-medium transition-all bg-white/10 text-white border border-white/10 shadow-sm focus:outline-none">CGPA to %</button>
+                            <button onclick="toggleConverterMode('toCGPA')" id="btn-toCGPA" class="px-6 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-300 transition-all focus:outline-none">% to CGPA</button>
+                        </div>
+                    </div>
+
+                    <!-- CGPA to % Section -->
+                    <div id="mode-toPercent" class="max-w-md mx-auto space-y-6">
+
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Select University</label>
+                            
+                            <!-- Custom Glass Dropdown -->
+                            <div class="custom-select-wrapper" id="uni-select-wrapper">
+                                <div class="custom-select-trigger" onclick="toggleUniDropdown('uni-options', 'uni-search')">
+                                    <span id="selected-uni-text" class="truncate text-slate-300">Search or Select University...</span>
+                                    <i class="fas fa-chevron-down text-slate-500 transition-transform text-xs dropdown-arrow"></i>
+                                </div>
+                                <div class="custom-select-options" id="uni-options">
+                                    <div class="search-box">
+                                        <div class="relative">
+                                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-600 text-xs"></i>
+                                            <input type="text" id="uni-search" placeholder="Search..." class="w-full bg-slate-900 border border-white/10 rounded-lg py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors placeholder-slate-700" oninput="filterUniversities('uni-search', 'uni-list-container')">
+                                        </div>
+                                    </div>
+                                    <div id="uni-list-container">
+                                        <!-- List populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Hidden input to store value for calculation -->
+                            <input type="hidden" id="percent-formula" value="">
+
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Your CGPA</label>
+                            <input type="number" id="percent-cgpa" placeholder="e.g. 8.5" step="0.01" class="glass-input w-full p-4 rounded-xl text-2xl text-center font-bold placeholder-slate-700" oninput="calculatePercentage()">
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6 text-center mt-8 border-t border-white/10 bg-gradient-to-b from-transparent to-white/5">
+                            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Equivalent Percentage</p>
+                            <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-3 drop-shadow-md">
+                                <span id="percent-result">0.00</span><span class="text-2xl text-slate-600 ml-1">%</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- % to CGPA Section -->
+                    <div id="mode-toCGPA" class="hidden max-w-md mx-auto space-y-6">
+
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Conversion Standard</label>
+                            <select id="cgpa-reverse-formula" class="glass-input w-full p-3 rounded-xl cursor-pointer text-sm appearance-none text-slate-300" onchange="calculateReverseCGPA()">
+                                <option value="9.5" class="bg-black text-slate-300">General / CBSE (Divide by 9.5)</option>
+                                <option value="10" class="bg-black text-slate-300">Anna / SRM / IITs (Divide by 10)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Percentage Scored</label>
+                            <input type="number" id="reverse-percent" placeholder="e.g. 85" step="0.1" class="glass-input w-full p-4 rounded-xl text-2xl text-center font-bold placeholder-slate-700" oninput="calculateReverseCGPA()">
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6 text-center mt-8 border-t border-white/10 bg-gradient-to-b from-transparent to-white/5">
+                            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Estimated CGPA</p>
+                            <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400 mt-3 drop-shadow-md">
+                                <span id="reverse-result">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 2. SGPA Calculator -->
+                <div id="content-sgpa" class="hidden space-y-6 animate-slide-up">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-4 gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white">SGPA Calculator</h2>
+                            <p class="text-slate-500 text-sm">Semester Grade Point Average</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="resetSGPA()" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-red-500/10 hover:border-red-500/30 text-red-400 transition-colors">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button onclick="addSubject()" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-emerald-400 transition-colors">
+                                <i class="fas fa-plus"></i> Add Subject
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Header -->
+                    <div class="grid grid-cols-12 gap-4 text-xs font-bold text-slate-600 uppercase tracking-wider px-2 pb-2 border-b border-white/10">
+                        <div class="col-span-6 md:col-span-5 pl-1">Subject</div>
+                        <div class="col-span-3 md:col-span-3 text-center">Credits</div>
+                        <div class="col-span-3 md:col-span-3 text-center">Grade Pt</div>
+                        <div class="col-span-1"></div>
+                    </div>
+
+                    <!-- Subject List -->
+                    <div id="sgpa-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Rows injected via JS -->
+                    </div>
+
+                    <!-- Result Bar -->
+                    <div class="glass-panel rounded-xl p-5 mt-6 flex justify-between items-center border-t border-white/10 bg-black/40">
+                        <div class="text-left">
+                            <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Total Credits</p>
+                            <p id="sgpa-total-credits" class="text-xl font-bold text-white mt-1">0</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Your SGPA</p>
+                            <p id="sgpa-result" class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-400">0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. CGPA Calculator -->
+                <div id="content-cgpa" class="hidden space-y-6 animate-slide-up">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-4 gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white">CGPA Calculator</h2>
+                            <p class="text-slate-500 text-sm">Cumulative GPA with Percentage</p>
+                        </div>
+                        <div class="flex gap-2">
+                             <button onclick="resetCGPA()" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-red-500/10 hover:border-red-500/30 text-red-400">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button onclick="addSemester()" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-emerald-400">
+                                <i class="fas fa-plus"></i> Add Sem
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-4 text-xs font-bold text-slate-600 uppercase tracking-wider px-2 pb-2 border-b border-white/10">
+                        <div class="col-span-4 pl-1">Semester</div>
+                        <div class="col-span-4 text-center">Total Credits</div>
+                        <div class="col-span-3 text-center">SGPA</div>
+                        <div class="col-span-1"></div>
+                    </div>
+
+                    <div id="cgpa-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Rows injected JS -->
+                    </div>
+
+                    <!-- CGPA Result Panel with Percentage Converter -->
+                    <div class="glass-panel rounded-xl p-5 mt-6 flex flex-col gap-4 border-t border-white/10 bg-black/40">
+                        <div class="flex justify-between items-center">
+                            <div class="text-left">
+                                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Accumulated Credits</p>
+                                <p id="cgpa-total-credits" class="text-xl font-bold text-white mt-1">0</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Cumulative GPA</p>
+                                <p id="cgpa-result" class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400">0.00</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Inline University Selector for Percentage -->
+                        <div class="border-t border-white/5 pt-4 mt-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Equivalent Percentage</p>
+                                <div class="custom-select-wrapper w-48" id="cgpa-uni-select-wrapper">
+                                    <div class="custom-select-trigger py-1.5 px-3 text-xs bg-black/50 border border-white/10 rounded-lg" onclick="toggleUniDropdown('cgpa-uni-options', 'cgpa-uni-search')">
+                                        <span id="selected-cgpa-uni-text" class="truncate text-slate-400">Select Standard...</span>
+                                        <i class="fas fa-chevron-down text-slate-600 text-[10px] transition-transform dropdown-arrow"></i>
+                                    </div>
+                                    <div class="custom-select-options" id="cgpa-uni-options">
+                                        <div class="search-box p-2">
+                                            <input type="text" id="cgpa-uni-search" placeholder="Search..." class="w-full bg-slate-900 border border-white/10 rounded-md py-1.5 px-2 text-xs text-white focus:outline-none focus:border-sky-500 transition-colors" oninput="filterUniversities('cgpa-uni-search', 'cgpa-uni-list-container')">
+                                        </div>
+                                        <div id="cgpa-uni-list-container"></div>
+                                    </div>
+                                    <input type="hidden" id="cgpa-percent-formula" value="">
+                                </div>
+                            </div>
+                            <p id="cgpa-percent-display" class="text-2xl font-bold text-emerald-400 text-right">0.00%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Target GPA -->
+                <div id="content-target" class="hidden space-y-6 animate-slide-up">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-white">Target GPA Calculator</h2>
+                        <p class="text-slate-500 text-sm">Planning Tool</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Current Stats -->
+                        <div class="glass-panel p-6 rounded-xl space-y-4 bg-black/40 border border-white/10">
+                            <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider border-b border-white/10 pb-3 mb-2">Current Status</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-slate-500 block mb-1.5 font-bold">Current CGPA</label>
+                                    <input type="number" id="target-current-gpa" class="glass-input w-full p-2.5 rounded-lg text-sm placeholder-slate-700" placeholder="e.g. 7.5" oninput="calculateTarget()">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-500 block mb-1.5 font-bold">Credits Completed</label>
+                                    <input type="number" id="target-credits-done" class="glass-input w-full p-2.5 rounded-lg text-sm placeholder-slate-700" placeholder="e.g. 60" oninput="calculateTarget()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Goals -->
+                        <div class="glass-panel p-6 rounded-xl space-y-4 bg-black/40 border border-white/10">
+                            <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider border-b border-white/10 pb-3 mb-2">Future Goals</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-slate-500 block mb-1.5 font-bold">Target CGPA</label>
+                                    <input type="number" id="target-goal-gpa" class="glass-input w-full p-2.5 rounded-lg text-sm placeholder-slate-700" placeholder="e.g. 8.0" oninput="calculateTarget()">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-500 block mb-1.5 font-bold">Upcoming Credits</label>
+                                    <input type="number" id="target-next-credits" class="glass-input w-full p-2.5 rounded-lg text-sm placeholder-slate-700" placeholder="e.g. 20 (Next Sem)" oninput="calculateTarget()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl p-6 text-center mt-4 border-t border-white/10 bg-gradient-to-b from-transparent to-white/5">
+                        <p class="text-slate-500 text-xs uppercase tracking-wider font-bold mb-2">Required GPA in Next Semester</p>
+                        <div id="target-result-container">
+                            <div class="text-5xl font-bold text-white drop-shadow-md" id="target-result">0.00</div>
+                            <p class="text-slate-600 text-xs mt-3" id="target-message">Enter your details to calculate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Info Tab (Knowledge Base) -->
+                <div id="content-info" class="hidden space-y-6 animate-slide-up">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-white">Academic Knowledge Base</h2>
+                        <p class="text-slate-500 text-sm">Definitions & Standards</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        
+                        <!-- Accordion Item 1: Definitions -->
+                        <div class="glass-panel rounded-xl overflow-hidden bg-black/40 border border-white/10">
+                            <button onclick="toggleAccordion('faq1')" class="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                <span class="font-semibold text-slate-300 text-sm">1. What is GPA, CGPA, and SGPA?</span>
+                                <i id="icon-faq1" class="fas fa-chevron-down text-slate-600 transition-transform text-xs"></i>
+                            </button>
+                            <div id="faq1" class="accordion-content bg-black">
+                                <div class="p-5 text-sm text-slate-400 space-y-4 leading-relaxed border-t border-white/10">
+                                    <p><strong class="text-white block mb-1">SGPA (Semester Grade Point Average)</strong>
+                                    Represents your performance in a single semester. It is calculated by weighing the grade points earned in each subject by its credit value.</p>
+                                    
+                                    <p><strong class="text-white block mb-1">CGPA (Cumulative Grade Point Average)</strong>
+                                    Represents your overall performance across all completed semesters. It is the weighted average of all your SGPAs.</p>
+                                    
+                                    <p><strong class="text-white block mb-1">GPA (Grade Point Average)</strong>
+                                    A general term used internationally. In the US, it is typically on a 4.0 scale. In India, it usually refers to the 10-point scale used for SGPA/CGPA.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Item 2: Calculation Examples -->
+                        <div class="glass-panel rounded-xl overflow-hidden bg-black/40 border border-white/10">
+                            <button onclick="toggleAccordion('faq2')" class="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                <span class="font-semibold text-slate-300 text-sm">2. How to Calculate SGPA & CGPA? (Examples)</span>
+                                <i id="icon-faq2" class="fas fa-chevron-down text-slate-600 transition-transform text-xs"></i>
+                            </button>
+                            <div id="faq2" class="accordion-content bg-black">
+                                <div class="p-5 text-sm text-slate-400 border-t border-white/10">
+                                    <div class="mb-6">
+                                        <h4 class="text-sky-400 font-bold mb-2 text-xs uppercase">SGPA Calculation</h4>
+                                        <p class="mb-2 text-xs">Formula: <span class="font-mono text-white bg-white/10 px-1 rounded">Σ (Credit × Grade Point) / Total Credits</span></p>
+                                        <div class="bg-slate-900 p-3 rounded border border-white/10">
+                                            <table class="w-full text-xs text-left">
+                                                <tr class="text-slate-500 border-b border-white/5"><th>Subject</th><th>Credit</th><th>Grade</th><th>Total</th></tr>
+                                                <tr><td>Math</td><td>4</td><td>9 (A+)</td><td>36</td></tr>
+                                                <tr><td>Physics</td><td>3</td><td>8 (A)</td><td>24</td></tr>
+                                                <tr><td>English</td><td>2</td><td>7 (B+)</td><td>14</td></tr>
+                                                <tr class="text-white font-bold border-t border-white/10"><td>Total</td><td>9</td><td>-</td><td>74</td></tr>
+                                            </table>
+                                            <p class="mt-2 text-right text-emerald-400 font-bold">SGPA = 74 / 9 = 8.22</p>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="text-sky-400 font-bold mb-2 text-xs uppercase">CGPA Calculation</h4>
+                                        <p class="mb-2 text-xs">Formula: <span class="font-mono text-white bg-white/10 px-1 rounded">Σ (Sem SGPA × Sem Credits) / Total Sem Credits</span></p>
+                                        <div class="bg-slate-900 p-3 rounded border border-white/10">
+                                            <p class="text-xs mb-1">Sem 1: 20 Credits, 8.2 SGPA</p>
+                                            <p class="text-xs mb-1">Sem 2: 22 Credits, 7.5 SGPA</p>
+                                            <p class="text-xs mt-2 text-slate-500">((20×8.2) + (22×7.5)) / (20+22) = (164 + 165) / 42</p>
+                                            <p class="mt-2 text-right text-emerald-400 font-bold">CGPA = 329 / 42 = 7.83</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Item 3: University Formulas Cheat Sheet -->
+                        <div class="glass-panel rounded-xl overflow-hidden bg-black/40 border border-white/10">
+                            <button onclick="toggleAccordion('faq3')" class="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                <span class="font-semibold text-emerald-300 text-sm">3. University Formulas Cheat Sheet</span>
+                                <i id="icon-faq3" class="fas fa-chevron-down text-slate-600 transition-transform text-xs"></i>
+                            </button>
+                            <div id="faq3" class="accordion-content bg-black">
+                                <div class="p-5 text-sm border-t border-white/10 grid gap-4">
+                                    
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">Direct 10x Multiplier</p>
+                                        <p class="text-slate-500 text-xs mb-1">Formula: <span class="text-sky-400">CGPA × 10</span></p>
+                                        <p class="text-slate-400 text-xs">Anna Univ, SRM, VIT, BITS Pilani, IITs, Amity, Manipal, Madras Univ.</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">Standard 9.5x Multiplier</p>
+                                        <p class="text-slate-500 text-xs mb-1">Formula: <span class="text-sky-400">CGPA × 9.5</span></p>
+                                        <p class="text-slate-400 text-xs">CBSE, Delhi Univ (DU), Bangalore Univ, Calicut Univ.</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">South Zone (VTU / JNTU-K)</p>
+                                        <p class="text-slate-500 text-xs mb-1">Formula: <span class="text-sky-400">(CGPA - 0.75) × 10</span></p>
+                                        <p class="text-slate-400 text-xs">VTU, JNTU Kakinada, MAKAUT (WB), Andhra Univ.</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">JNTU-H / GTU / Mumbai</p>
+                                        <p class="text-slate-500 text-xs mb-1">Formulas vary slightly:</p>
+                                        <ul class="list-disc list-inside text-slate-400 text-xs">
+                                            <li><span class="text-sky-400">(CGPA - 0.5) × 10</span> : JNTU Hyderabad, GTU, MG Univ.</li>
+                                            <li><span class="text-sky-400">(7.1 × CGPA) + 11</span> : Mumbai Univ (General).</li>
+                                            <li><span class="text-sky-400">(10 × CGPA) - 3.75</span> : KTU (Kerala Tech).</li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Item 4: Conversion Table -->
+                        <div class="glass-panel rounded-xl overflow-hidden bg-black/40 border border-white/10">
+                            <button onclick="toggleAccordion('faq4')" class="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                <span class="font-semibold text-slate-300 text-sm">4. Standard Conversion Table (10pt Scale)</span>
+                                <i id="icon-faq4" class="fas fa-chevron-down text-slate-600 transition-transform text-xs"></i>
+                            </button>
+                            <div id="faq4" class="accordion-content bg-black">
+                                <div class="p-5 border-t border-white/10">
+                                    <table class="w-full text-sm text-left text-slate-400">
+                                        <thead class="text-xs text-slate-600 uppercase border-b border-white/10">
+                                            <tr>
+                                                <th class="py-2">CGPA</th>
+                                                <th class="py-2">Percent (~9.5x)</th>
+                                                <th class="py-2">Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5">
+                                            <tr><td class="py-2 text-white font-bold">10</td><td class="py-2">95%</td><td class="py-2 text-emerald-400">O (Outstanding)</td></tr>
+                                            <tr><td class="py-2">9.0</td><td class="py-2">85.5%</td><td class="py-2 text-emerald-300">A+ (Excellent)</td></tr>
+                                            <tr><td class="py-2">8.0</td><td class="py-2">76%</td><td class="py-2 text-sky-400">A (Very Good)</td></tr>
+                                            <tr><td class="py-2">7.0</td><td class="py-2">66.5%</td><td class="py-2 text-sky-300">B+ (Good)</td></tr>
+                                            <tr><td class="py-2">6.0</td><td class="py-2">57%</td><td class="py-2 text-amber-200">B (Above Avg)</td></tr>
+                                            <tr><td class="py-2">5.0</td><td class="py-2">47.5%</td><td class="py-2 text-orange-400">C (Average)</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p class="text-xs text-slate-600 mt-3 italic">*Based on standard CBSE 9.5x multiplier. Colleges may vary.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Accordion Item 5: Study Abroad -->
+                        <div class="glass-panel rounded-xl overflow-hidden bg-black/40 border border-white/10">
+                            <button onclick="toggleAccordion('faq5')" class="w-full p-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                                <span class="font-semibold text-slate-300 text-sm">5. Study Abroad (10-Point to 4-Point GPA)</span>
+                                <i id="icon-faq5" class="fas fa-chevron-down text-slate-600 transition-transform text-xs"></i>
+                            </button>
+                            <div id="faq5" class="accordion-content bg-black">
+                                <div class="p-5 text-sm text-slate-400 border-t border-white/10">
+                                    <p class="mb-3 leading-relaxed">US Universities use a 4.0 scale. It is <strong>not</strong> a linear conversion (i.e., 5.0/10 is NOT 2.0/4.0). The WES (World Education Services) standard typically evaluates as:</p>
+                                    <table class="w-full text-sm text-left text-slate-400 mt-2">
+                                        <thead class="text-xs text-slate-600 uppercase border-b border-white/10">
+                                            <tr>
+                                                <th class="py-2">Indian CGPA</th>
+                                                <th class="py-2">US GPA</th>
+                                                <th class="py-2">US Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5">
+                                            <tr><td class="py-2 text-white">9.0 - 10.0</td><td class="py-2 text-emerald-400">4.0</td><td class="py-2">A</td></tr>
+                                            <tr><td class="py-2">8.0 - 8.9</td><td class="py-2 text-emerald-300">3.5 - 3.9</td><td class="py-2">A- / B+</td></tr>
+                                            <tr><td class="py-2">7.0 - 7.9</td><td class="py-2 text-sky-300">3.0 - 3.4</td><td class="py-2">B</td></tr>
+                                            <tr><td class="py-2">6.0 - 6.9</td><td class="py-2 text-amber-200">2.5 - 2.9</td><td class="py-2">C+</td></tr>
+                                            <tr><td class="py-2">5.0 - 5.9</td><td class="py-2 text-orange-400">2.0 - 2.4</td><td class="py-2">C</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p class="text-xs text-slate-600 mt-3 italic">Note: This is an estimation. For official applications, use WES or university-specific tools.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <footer class="text-center mt-8 text-slate-600 text-xs">
+            <p>Formulas derived from official university guidelines (CBSE, Anna, VTU, KTU, Mumbai, GTU, SPPU, BPUT, RGPV, Madras etc).</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Shared Formula Logic ---
+        function getPercentageValue(cgpa, formula) {
+            if (!formula || isNaN(cgpa)) return 0;
+            let percent = 0;
+
+            if (formula === "9.5") {
+                percent = cgpa * 9.5;
+            } else if (formula === "10") {
+                percent = cgpa * 10;
+            } else if (formula === "vtu") {
+                percent = (cgpa - 0.75) * 10;
+            } else if (formula === "ktu") {
+                percent = (10 * cgpa) - 3.75;
+            } else if (formula === "mg") {
+                percent = (cgpa - 0.5) * 10;
+            } else if (formula === "mumbai") {
+                percent = (7.1 * cgpa) + 11;
+            } else if (formula === "mumbai_eng") {
+                percent = (7.25 * cgpa) + 11;
+            } else if (formula === "dibrugarh") {
+                if (cgpa >= 5.5) {
+                    percent = (cgpa * 10) + 5;
+                } else {
+                    percent = cgpa * 10;
+                }
+            } else if (formula === "sppu") {
+                if (cgpa >= 9.50) percent = 20 * cgpa - 100;
+                else if (cgpa >= 8.25) percent = 12 * cgpa - 25;
+                else if (cgpa >= 6.75) percent = 10 * cgpa - 7.5;
+                else if (cgpa >= 5.75) percent = 5 * cgpa + 26.25;
+                else if (cgpa >= 5.25) percent = 10 * cgpa - 2.5;
+                else if (cgpa >= 4.75) percent = 10 * cgpa - 2.5;
+                else if (cgpa >= 4.00) percent = 6.6 * cgpa + 13.6;
+                else percent = 0;
+            } else if (formula === "scale4") {
+                percent = (cgpa / 4) * 100;
+            }
+            
+            return percent < 0 ? 0 : percent; // Prevent negative
+        }
+
+        // --- University Data ---
+        const universityGroups = [
+            {
+                label: "Direct 10x Multiplier (CGPA × 10)",
+                options: [
+                    { label: "Anna Univ / SRM / BITS Pilani / VIT", value: "10" },
+                    { label: "University of Madras / Madras Univ", value: "10" },
+                    { label: "IITs (Roorkee/KGP/Bombay) / NITs (Some)", value: "10" },
+                    { label: "Amity / Manipal / KIIT / Thapar / UPES", value: "10" },
+                    { label: "Tezpur / HPU / Gauhati / RGPV / HNGU", value: "10" },
+                    { label: "VNSGU / Shiv Nadar / Jamia Hamdard", value: "10" }
+                ]
+            },
+            {
+                label: "Standard 9.5x Multiplier (CGPA × 9.5)",
+                options: [
+                    { label: "CBSE / Schools Standard", value: "9.5" },
+                    { label: "Delhi University (DU) / JNU", value: "9.5" },
+                    { label: "Bangalore Univ / Calicut Univ", value: "9.5" },
+                    { label: "Vidyasagar Univ / Vinoba Bhave (VBU)", value: "9.5" }
+                ]
+            },
+            {
+                label: "Minus 0.75 Factor ((CGPA - 0.75) × 10)",
+                options: [
+                    { label: "VTU / MAKAUT (WBUT)", value: "vtu" },
+                    { label: "JNTU Kakinada / JNTU Anantapur", value: "vtu" },
+                    { label: "GGSIPU (IPU) / Gondwana Univ", value: "vtu" },
+                    { label: "Andhra Univ / Acharya Nagarjuna", value: "vtu" }
+                ]
+            },
+            {
+                label: "Minus 0.5 Factor ((CGPA - 0.5) × 10)",
+                options: [
+                    { label: "JNTU Hyderabad (JNTUH)", value: "mg" },
+                    { label: "GTU / Jamia Millia Islamia", value: "mg" },
+                    { label: "MG University / Osmania Univ", value: "mg" },
+                    { label: "NITs (General) / BPUT (Odisha)", value: "mg" }
+                ]
+            },
+            {
+                label: "Special / Complex Formulas",
+                options: [
+                    { label: "Mumbai Univ (General/CBCS) (7.1 × C + 11)", value: "mumbai" },
+                    { label: "Mumbai Univ (Engg Old) (7.25 × C + 11)", value: "mumbai_eng" },
+                    { label: "SPPU (Pune) (Range Based)", value: "sppu" },
+                    { label: "KTU ((10 × C) - 3.75)", value: "ktu" },
+                    { label: "Dibrugarh Univ (Conditional)", value: "dibrugarh" }
+                ]
+            },
+            {
+                label: "International",
+                options: [
+                    { label: "USA / 4.0 Scale (Approx)", value: "scale4" }
+                ]
+            }
+        ];
+
+        // --- Custom Dropdown Logic ---
+        function renderUniversityOptions(containerId, inputId, displayId, callbackFn) {
+            const listContainer = document.getElementById(containerId);
+            listContainer.innerHTML = '';
+
+            universityGroups.forEach((group) => {
+                const groupWrapper = document.createElement('div');
+                groupWrapper.className = "group-wrapper border-b border-white/5 last:border-0";
+
+                const groupHeader = document.createElement('div');
+                groupHeader.className = "group-header flex justify-between items-center p-3 cursor-pointer hover:bg-white/5 transition-colors";
+                groupHeader.innerHTML = `
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">${group.label}</span>
+                    <i class="fas fa-chevron-down text-xs text-slate-600 transition-transform duration-300"></i>
+                `;
+                
+                const groupContent = document.createElement('div');
+                groupContent.className = "group-content overflow-hidden transition-all duration-300 max-h-0";
+                
+                groupHeader.onclick = (e) => {
+                    e.stopPropagation();
+                    if (groupContent.classList.contains('open')) {
+                        groupContent.classList.remove('open');
+                        groupContent.style.maxHeight = '0px';
+                        groupHeader.querySelector('i').style.transform = 'rotate(0deg)';
+                    } else {
+                        groupContent.classList.add('open');
+                        groupContent.style.maxHeight = groupContent.scrollHeight + "px";
+                        groupHeader.querySelector('i').style.transform = 'rotate(180deg)';
+                    }
+                };
+
+                group.options.forEach(option => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = "custom-option py-3 px-4 text-sm text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors border-l-2 border-transparent hover:border-sky-500";
+                    optionEl.innerText = option.label;
+                    optionEl.onclick = (e) => {
+                        e.stopPropagation();
+                        document.getElementById(displayId).innerText = option.label;
+                        document.getElementById(displayId).classList.add('text-white');
+                        document.getElementById(inputId).value = option.value;
+                        
+                        // Close this dropdown
+                        const dropdown = listContainer.parentElement;
+                        dropdown.classList.remove('open');
+                        const trigger = dropdown.parentElement.querySelector('.custom-select-trigger i');
+                        if(trigger) trigger.style.transform = 'rotate(0deg)';
+
+                        if (callbackFn) callbackFn();
+                    };
+                    groupContent.appendChild(optionEl);
+                });
+
+                groupWrapper.appendChild(groupHeader);
+                groupWrapper.appendChild(groupContent);
+                listContainer.appendChild(groupWrapper);
+            });
+        }
+
+        function toggleUniDropdown(dropdownId, searchId) {
+            const dropdown = document.getElementById(dropdownId);
+            const wrapper = dropdown.parentElement;
+            const arrow = wrapper.querySelector('.dropdown-arrow');
+            
+            if (dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+                if(arrow) arrow.style.transform = 'rotate(0deg)';
+            } else {
+                // Close other dropdowns first (optional but good UX)
+                document.querySelectorAll('.custom-select-options.open').forEach(el => {
+                    el.classList.remove('open');
+                    const arr = el.parentElement.querySelector('.dropdown-arrow');
+                    if(arr) arr.style.transform = 'rotate(0deg)';
+                });
+
+                dropdown.classList.add('open');
+                if(arrow) arrow.style.transform = 'rotate(180deg)';
+                if(searchId) document.getElementById(searchId).focus();
+            }
+        }
+
+        function filterUniversities(searchId, listId) {
+            const searchTerm = document.getElementById(searchId).value.toLowerCase();
+            const listContainer = document.getElementById(listId);
+            const groups = listContainer.querySelectorAll('.group-wrapper');
+
+            groups.forEach(group => {
+                const header = group.querySelector('.group-header');
+                const content = group.querySelector('.group-content');
+                const options = content.querySelectorAll('.custom-option');
+                const icon = header.querySelector('i');
+                
+                let hasVisibleOption = false;
+
+                options.forEach(opt => {
+                    const text = opt.innerText.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        opt.style.display = 'block';
+                        hasVisibleOption = true;
+                    } else {
+                        opt.style.display = 'none';
+                    }
+                });
+
+                if (searchTerm === '') {
+                    group.style.display = 'block';
+                    options.forEach(opt => opt.style.display = 'block');
+                    content.style.maxHeight = '0px';
+                    content.classList.remove('open');
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    if (hasVisibleOption) {
+                        group.style.display = 'block';
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.classList.add('open');
+                        icon.style.transform = 'rotate(180deg)';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Init Dropdowns
+        renderUniversityOptions('uni-list-container', 'percent-formula', 'selected-uni-text', calculatePercentage);
+        renderUniversityOptions('cgpa-uni-list-container', 'cgpa-percent-formula', 'selected-cgpa-uni-text', calcCGPA);
+
+        // Close clicks outside
+        window.addEventListener('click', function(e) {
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                if (!wrapper.contains(e.target)) {
+                    const dropdown = wrapper.querySelector('.custom-select-options');
+                    const arrow = wrapper.querySelector('.dropdown-arrow');
+                    if (dropdown) dropdown.classList.remove('open');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+
+        // --- Navigation ---
+        function switchTab(tabId) {
+            document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.glass-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        // --- 1a. Percentage Calculator Logic ---
+        function calculatePercentage() {
+            const cgpa = parseFloat(document.getElementById('percent-cgpa').value);
+            const formula = document.getElementById('percent-formula').value;
+            const resultEl = document.getElementById('percent-result');
+
+            if (!formula) {
+                return;
+            }
+
+            if (isNaN(cgpa)) {
+                resultEl.innerText = "0.00";
+                return;
+            }
+
+            const percent = getPercentageValue(cgpa, formula);
+            resultEl.innerText = percent.toFixed(2);
+            
+        }
+
+        // --- 1b. Reverse Calculator Logic ---
+        function toggleConverterMode(mode) {
+            const toPercentDiv = document.getElementById('mode-toPercent');
+            const toCGPADiv = document.getElementById('mode-toCGPA');
+            const btnToPercent = document.getElementById('btn-toPercent');
+            const btnToCGPA = document.getElementById('btn-toCGPA');
+
+            if (mode === 'toPercent') {
+                toPercentDiv.classList.remove('hidden');
+                toCGPADiv.classList.add('hidden');
+                
+                btnToPercent.classList.add('bg-white/10', 'text-white', 'border', 'border-white/10', 'shadow-sm');
+                btnToPercent.classList.remove('text-slate-400', 'text-slate-500');
+                
+                btnToCGPA.classList.remove('bg-white/10', 'text-white', 'border', 'border-white/10', 'shadow-sm');
+                btnToCGPA.classList.add('text-slate-500');
+            } else {
+                toPercentDiv.classList.add('hidden');
+                toCGPADiv.classList.remove('hidden');
+
+                btnToCGPA.classList.add('bg-white/10', 'text-white', 'border', 'border-white/10', 'shadow-sm');
+                btnToCGPA.classList.remove('text-slate-400', 'text-slate-500');
+                
+                btnToPercent.classList.remove('bg-white/10', 'text-white', 'border', 'border-white/10', 'shadow-sm');
+                btnToPercent.classList.add('text-slate-500');
+            }
+        }
+
+        function calculateReverseCGPA() {
+            const percent = parseFloat(document.getElementById('reverse-percent').value);
+            const formula = document.getElementById('cgpa-reverse-formula').value;
+            const resultEl = document.getElementById('reverse-result');
+
+            if (isNaN(percent)) {
+                resultEl.innerText = "0.00";
+                return;
+            }
+
+            let cgpa = 0;
+            if (formula === "9.5") {
+                cgpa = percent / 9.5;
+            } else {
+                cgpa = percent / 10;
+            }
+            if(cgpa > 10) cgpa = 10;
+            resultEl.innerText = cgpa.toFixed(2);
+        }
+
+        // --- 2. SGPA Calculator Logic ---
+        let subjectCount = 0;
+
+        function addSubject() {
+            subjectCount++;
+            const container = document.getElementById('sgpa-list');
+            const div = document.createElement('div');
+            div.className = "grid grid-cols-12 gap-4 items-center animate-fade-in bg-white/5 p-2 rounded-lg border border-white/5 hover:bg-white/10 transition-colors";
+            div.innerHTML = `
+                <div class="col-span-6 md:col-span-5">
+                    <input type="text" placeholder="Subject ${subjectCount}" class="glass-input w-full p-2 rounded-lg text-sm bg-transparent border-0 focus:ring-0">
+                </div>
+                <div class="col-span-3 md:col-span-3">
+                    <input type="number" class="sgpa-credit glass-input w-full p-2 rounded-lg text-sm text-center bg-black/20" placeholder="Cr" oninput="calcSGPA()">
+                </div>
+                <div class="col-span-3 md:col-span-3">
+                    <input type="number" class="sgpa-grade glass-input w-full p-2 rounded-lg text-sm text-center bg-black/20" placeholder="Pt" oninput="calcSGPA()">
+                </div>
+                <div class="col-span-1 text-center">
+                    <button onclick="this.parentElement.parentElement.remove(); calcSGPA()" class="text-slate-500 hover:text-red-400 transition-colors p-2"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function calcSGPA() {
+            const credits = document.querySelectorAll('.sgpa-credit');
+            const grades = document.querySelectorAll('.sgpa-grade');
+            
+            let totalCredits = 0;
+            let totalPoints = 0;
+
+            credits.forEach((cred, index) => {
+                const c = parseFloat(cred.value);
+                const g = parseFloat(grades[index].value);
+
+                if (!isNaN(c) && !isNaN(g)) {
+                    totalCredits += c;
+                    totalPoints += (c * g);
+                }
+            });
+
+            const sgpa = totalCredits === 0 ? 0 : (totalPoints / totalCredits);
+            document.getElementById('sgpa-total-credits').innerText = totalCredits;
+            document.getElementById('sgpa-result').innerText = sgpa.toFixed(2);
+        }
+
+        function resetSGPA() {
+            document.getElementById('sgpa-list').innerHTML = '';
+            subjectCount = 0;
+            addSubject(); addSubject(); addSubject();
+            calcSGPA();
+        }
+        addSubject(); addSubject(); addSubject();
+
+        // --- 3. CGPA Calculator Logic ---
+        let semCount = 0;
+
+        function addSemester() {
+            semCount++;
+            const container = document.getElementById('cgpa-list');
+            const div = document.createElement('div');
+            div.className = "grid grid-cols-12 gap-4 items-center animate-fade-in bg-white/5 p-2 rounded-lg border border-white/5 hover:bg-white/10 transition-colors";
+            div.innerHTML = `
+                <div class="col-span-4 text-sm text-slate-400 pl-3 font-medium">
+                    Semester ${semCount}
+                </div>
+                <div class="col-span-4">
+                    <input type="number" class="cgpa-credit glass-input w-full p-2 rounded-lg text-sm text-center bg-black/20" placeholder="Credits" oninput="calcCGPA()">
+                </div>
+                <div class="col-span-3">
+                    <input type="number" class="cgpa-sgpa glass-input w-full p-2 rounded-lg text-sm text-center bg-black/20" placeholder="SGPA" oninput="calcCGPA()">
+                </div>
+                <div class="col-span-1 text-center">
+                    <button onclick="this.parentElement.parentElement.remove(); calcCGPA()" class="text-slate-500 hover:text-red-400 transition-colors p-2"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function calcCGPA() {
+            const credits = document.querySelectorAll('.cgpa-credit');
+            const sgpas = document.querySelectorAll('.cgpa-sgpa');
+            
+            let totalCredits = 0;
+            let weightedSum = 0;
+
+            credits.forEach((cred, index) => {
+                const c = parseFloat(cred.value);
+                const s = parseFloat(sgpas[index].value);
+
+                if (!isNaN(c) && !isNaN(s)) {
+                    totalCredits += c;
+                    weightedSum += (c * s);
+                }
+            });
+
+            const cgpa = totalCredits === 0 ? 0 : (weightedSum / totalCredits);
+            document.getElementById('cgpa-total-credits').innerText = totalCredits;
+            document.getElementById('cgpa-result').innerText = cgpa.toFixed(2);
+
+            // Update Percentage in CGPA Tab
+            const formula = document.getElementById('cgpa-percent-formula').value;
+            const percent = getPercentageValue(cgpa, formula);
+            document.getElementById('cgpa-percent-display').innerText = percent.toFixed(2) + "%";
+        }
+
+        function resetCGPA() {
+            document.getElementById('cgpa-list').innerHTML = '';
+            semCount = 0;
+            addSemester(); addSemester();
+            calcCGPA();
+        }
+        addSemester(); addSemester();
+
+        // --- 4. Target GPA Logic ---
+        function calculateTarget() {
+            const current = parseFloat(document.getElementById('target-current-gpa').value);
+            const done = parseFloat(document.getElementById('target-credits-done').value);
+            const goal = parseFloat(document.getElementById('target-goal-gpa').value);
+            const next = parseFloat(document.getElementById('target-next-credits').value);
+            
+            const resultEl = document.getElementById('target-result');
+            const messageEl = document.getElementById('target-message');
+
+            if (isNaN(current) || isNaN(done) || isNaN(goal) || isNaN(next) || next === 0) {
+                resultEl.innerText = "0.00";
+                messageEl.innerText = "Please fill all fields correctly";
+                resultEl.className = "text-5xl font-bold text-white";
+                return;
+            }
+
+            const totalCredits = done + next;
+            const requiredPoints = (goal * totalCredits) - (current * done);
+            const requiredGPA = requiredPoints / next;
+
+            resultEl.innerText = requiredGPA.toFixed(2);
+
+            if (requiredGPA > 10) {
+                messageEl.innerText = "Impossible! (>10)";
+                resultEl.className = "text-5xl font-bold text-red-400 drop-shadow-md";
+            } else if (requiredGPA < 0) {
+                messageEl.innerText = "Achieved!";
+                resultEl.className = "text-5xl font-bold text-emerald-400 drop-shadow-md";
+            } else {
+                messageEl.innerText = "You can do it!";
+                resultEl.className = "text-5xl font-bold text-emerald-400 drop-shadow-md";
+            }
+        }
+
+        // --- 5. Accordion Logic ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                content.classList.remove('open');
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.classList.add('open');
+                icon.style.transform = "rotate(180deg)";
+            }
+        }
+    </script>
+</body>
+</html>
