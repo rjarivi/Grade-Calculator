@@ -704,40 +704,42 @@
                 </div>
 
             </div>
+            <div class="absolute bottom-4 right-4">
+                <div class="relative">
+                    <button id="share-button" aria-haspopup="true" aria-expanded="false" aria-controls="share-menu" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        <i class="fas fa-share-nodes"></i> Share
+                    </button>
+                    <div id="share-menu" role="menu" aria-hidden="true" class="absolute bottom-full right-0 mb-2 w-64 bg-black/95 border border-white/10 rounded-lg hidden opacity-0 translate-y-2 transition-all duration-300 ease-in-out" style="box-shadow: 0 2px 6px rgba(0,0,0,0.1)">
+                        <div class="p-2 border-b border-white/10">
+                            <label for="share-expiry" class="block text-[11px] text-slate-300 mb-1">Link expiry</label>
+                            <select id="share-expiry" class="glass-input w-full p-2 rounded-md text-xs text-slate-200">
+                                <option value="7">7 days</option>
+                                <option value="30">30 days</option>
+                                <option value="never">Never</option>
+                            </select>
+                        </div>
+                        <div class="py-2">
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-copy"><i class="fas fa-link mr-2"></i>Copy link</button>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-device"><i class="fas fa-share mr-2"></i>Share via device</button>
+                            <div class="border-t border-white/10 my-2"></div>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-twitter"><i class="fab fa-twitter mr-2"></i>Twitter</button>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-facebook"><i class="fab fa-facebook mr-2"></i>Facebook</button>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-linkedin"><i class="fab fa-linkedin mr-2"></i>LinkedIn</button>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-whatsapp"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</button>
+                            <button role="menuitem" class="w-full text-left px-3 py-2 text-sm hover:bg-white/5 focus:bg-white/10 text-slate-200" id="share-telegram"><i class="fab fa-telegram mr-2"></i>Telegram</button>
+                        </div>
+                        <div class="p-2 text-[11px] text-slate-400 border-t border-white/10">
+                            View-only link shares calculation values.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <footer class="text-center mt-8 text-slate-600 text-xs">
             <p>Formulas derived from official university guidelines (CBSE, Anna, VTU, KTU, Mumbai, GTU, SPPU, BPUT, RGPV, Madras etc).</p>
             <div class="mt-2 flex justify-center">
                 <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-white/5 border border-white/10 text-slate-300">Academic Toolkit</span>
-            </div>
-            <div class="mt-4 flex justify-center">
-                <div class="relative">
-                    <button id="share-button" aria-haspopup="true" aria-expanded="false" class="glass-btn px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-share-nodes"></i> Share
-                    </button>
-                    <div id="share-menu" class="absolute right-0 mt-2 w-56 bg-black border border-white/10 rounded-lg shadow-xl hidden">
-                        <div class="p-2 border-b border-white/10">
-                            <label for="share-expiry" class="block text-[11px] text-slate-500 mb-1">Link expiry</label>
-                            <select id="share-expiry" class="glass-input w-full p-2 rounded-md text-xs">
-                                <option value="7">7 days</option>
-                                <option value="30">30 days</option>
-                                <option value="never">Never</option>
-                            </select>
-                        </div>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-copy"><i class="fas fa-link mr-2"></i>Copy link</button>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-device"><i class="fas fa-share mr-2"></i>Share via device</button>
-                        <div class="border-t border-white/10 my-1"></div>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-twitter"><i class="fab fa-twitter mr-2"></i>Twitter</button>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-facebook"><i class="fab fa-facebook mr-2"></i>Facebook</button>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-linkedin"><i class="fab fa-linkedin mr-2"></i>LinkedIn</button>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-whatsapp"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</button>
-                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/5" id="share-telegram"><i class="fab fa-telegram mr-2"></i>Telegram</button>
-                        <div class="p-2 text-[11px] text-slate-500 border-t border-white/10">
-                            This shares calculation values only. Inputs are disabled for viewers.
-                        </div>
-                    </div>
-                </div>
             </div>
         </footer>
 
@@ -1329,12 +1331,34 @@
             const btn = document.getElementById('share-button');
             const menu = document.getElementById('share-menu');
             if (!btn || !menu) return;
-            btn.addEventListener('click',()=>{
-                const open = !menu.classList.contains('hidden');
-                menu.classList.toggle('hidden', open);
-                btn.setAttribute('aria-expanded', (!open).toString());
+            function openMenu(){
+                if (!menu.classList.contains('hidden')) return;
+                menu.classList.remove('hidden');
+                menu.setAttribute('aria-hidden','false');
+                btn.setAttribute('aria-expanded','true');
+                menu.classList.remove('opacity-0','translate-y-2');
+                menu.classList.add('opacity-100','translate-y-0');
+                const items = menu.querySelectorAll('[role="menuitem"]');
+                if (items.length) items[0].focus();
+            }
+            function closeMenu(){
+                if (menu.classList.contains('hidden')) return;
+                menu.classList.add('opacity-0','translate-y-2');
+                menu.classList.remove('opacity-100','translate-y-0');
+                setTimeout(()=>{ menu.classList.add('hidden'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); },300);
+            }
+            btn.addEventListener('click',()=>{ if(menu.classList.contains('hidden')) openMenu(); else closeMenu(); });
+            window.addEventListener('click',(e)=>{ if(menu && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu(); });
+            btn.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); openMenu(); } });
+            menu.addEventListener('keydown',(e)=>{
+                const items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
+                const idx = items.indexOf(document.activeElement);
+                if(e.key==='Escape'){ e.preventDefault(); closeMenu(); btn.focus(); }
+                if(e.key==='ArrowDown'){ e.preventDefault(); const n = items[idx+1] || items[0]; n.focus(); }
+                if(e.key==='ArrowUp'){ e.preventDefault(); const p = items[idx-1] || items[items.length-1]; p.focus(); }
+                if(e.key==='Home'){ e.preventDefault(); items[0].focus(); }
+                if(e.key==='End'){ e.preventDefault(); items[items.length-1].focus(); }
             });
-            window.addEventListener('click',(e)=>{ if(menu && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden'); });
 
             function openShare(url){ window.open(url, '_blank'); }
             function build(platform){
