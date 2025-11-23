@@ -1225,8 +1225,7 @@
             }
         }
     </script>
-</body>
-</html>
+    <script>
         // --- Sharing ---
         function utf8ToBase64(str){
             return btoa(unescape(encodeURIComponent(str)));
@@ -1375,3 +1374,6 @@
                 try{ const payload = JSON.parse(base64ToUtf8(shared)); applySharedState(payload); }catch(e){}
             }
         })();
+    </script>
+</body>
+</html>
